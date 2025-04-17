@@ -11,7 +11,7 @@ public interface BrigadeService {
 
     Optional<Brigade> findById(Long id);
 
-    Brigade savve(Brigade data);
+    Brigade save(Brigade data);
 
     void update(Brigade data);
 
