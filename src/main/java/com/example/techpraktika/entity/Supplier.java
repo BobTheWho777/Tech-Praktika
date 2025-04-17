@@ -3,7 +3,9 @@ package com.example.techpraktika.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
 
@@ -11,6 +13,8 @@ import java.util.List;
 @Table(name = "supplier")
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
 public class Supplier {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

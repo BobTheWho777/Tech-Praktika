@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -20,8 +19,8 @@ public class ConstructionSite {
     private Long id;
     private String name;
     private String location;
-    private LocalDate startDate;
-    private LocalDate endDate;
+    private Date startDate;
+    private Date endDate;
     private int budget;
 
     @OneToMany(mappedBy = "constructionSite", cascade = CascadeType.ALL)

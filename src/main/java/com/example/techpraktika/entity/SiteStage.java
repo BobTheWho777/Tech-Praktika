@@ -1,10 +1,19 @@
 package com.example.techpraktika.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.Date;
 
 @Entity
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "site_stage")
 public class SiteStage {
     @Id
@@ -12,8 +21,8 @@ public class SiteStage {
     private Long id;
 
     private String stageName;
-    private LocalDate startDate;
-    private LocalDate endDate;
+    private Date startDate;
+    private Date endDate;
     private String status;
 
     @ManyToOne

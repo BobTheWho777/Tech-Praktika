@@ -2,13 +2,17 @@ package com.example.techpraktika.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 
 @Entity
 @Table(name = "materials")
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
 public class Material {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
