@@ -15,9 +15,7 @@ public class BrigadeController {
 
     private final BrigadeService brigadeService;
 
-    public BrigadeController(BrigadeService brigadeService) {
-        this.brigadeService = brigadeService;
-    }
+    public BrigadeController(BrigadeService brigadeService) {this.brigadeService = brigadeService;}
 
     // Получить все бригады
     @GetMapping
