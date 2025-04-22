@@ -52,7 +52,7 @@ public class BrigadeWorkerController {
 
     // Удаляем работника
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delteWorker(@PathVariable Long id){
+    public ResponseEntity<Void> deleteWorker(@PathVariable Long id){
         Optional<BrigadeWorker> worker = brigadeWorkerService.findById(id);
         if (worker.isPresent()){
             brigadeWorkerService.deleteById(id);
