@@ -8,8 +8,7 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-@Getter
-@Setter
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "construction_site")
@@ -31,4 +30,67 @@ public class ConstructionSite {
     @JsonIgnore
     private List<Defect> defects;
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
+    }
+
+    public int getBudget() {
+        return budget;
+    }
+
+    public void setBudget(int budget) {
+        this.budget = budget;
+    }
+
+    public List<SiteStage> getStages() {
+        return stages;
+    }
+
+    public void setStages(List<SiteStage> stages) {
+        this.stages = stages;
+    }
+
+    public List<Defect> getDefects() {
+        return defects;
+    }
+
+    public void setDefects(List<Defect> defects) {
+        this.defects = defects;
+    }
 }
