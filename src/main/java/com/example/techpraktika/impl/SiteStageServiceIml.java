@@ -3,10 +3,11 @@ package com.example.techpraktika.impl;
 import com.example.techpraktika.entity.SiteStage;
 import com.example.techpraktika.repository.SiteStageRepo;
 import com.example.techpraktika.service.SiteStageService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-
+@Service
 public class SiteStageServiceIml implements SiteStageService {
     private final SiteStageRepo repo;
 

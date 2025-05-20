@@ -3,10 +3,11 @@ package com.example.techpraktika.impl;
 import com.example.techpraktika.entity.Defect;
 import com.example.techpraktika.repository.DefectRepo;
 import com.example.techpraktika.service.DefectService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-
+@Service
 public class DefectServiceImpl implements DefectService {
     private final DefectRepo repo;
 

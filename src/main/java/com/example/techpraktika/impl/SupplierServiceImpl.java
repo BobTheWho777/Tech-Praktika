@@ -3,10 +3,11 @@ package com.example.techpraktika.impl;
 import com.example.techpraktika.entity.Supplier;
 import com.example.techpraktika.repository.SupplierRepo;
 import com.example.techpraktika.service.SupplierService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-
+@Service
 public class SupplierServiceImpl implements SupplierService {
     private final SupplierRepo repo;
 

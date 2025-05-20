@@ -2,7 +2,6 @@ package com.example.techpraktika.controller;
 
 import com.example.techpraktika.entity.Defect;
 import com.example.techpraktika.service.DefectService;
-import org.atmosphere.config.service.Get;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

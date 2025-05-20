@@ -3,10 +3,12 @@ package com.example.techpraktika.impl;
 import com.example.techpraktika.entity.BrigadeWorker;
 import com.example.techpraktika.repository.BrigadeWorkerRepo;
 import com.example.techpraktika.service.BrigadeWorkerService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class BrigadeWorkerServiceImpl implements BrigadeWorkerService {
     private final BrigadeWorkerRepo repo;
 

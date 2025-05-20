@@ -3,10 +3,11 @@ package com.example.techpraktika.impl;
 import com.example.techpraktika.entity.Material;
 import com.example.techpraktika.repository.MaterialRepo;
 import com.example.techpraktika.service.MaterialService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-
+@Service
 public class MaterialServiceImpl implements MaterialService {
     private final MaterialRepo repo;
 
