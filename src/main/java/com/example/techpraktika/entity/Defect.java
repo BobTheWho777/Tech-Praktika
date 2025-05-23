@@ -9,6 +9,8 @@ import lombok.Setter;
 import java.time.LocalDate;
 import java.util.Date;
 
+@Setter
+@Getter
 @Entity
 @Table(name = "Defects")
 @NoArgsConstructor
@@ -27,43 +29,4 @@ public class Defect {
     @JoinColumn(name = "site_id")
     private ConstructionSite constructionSite;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Date getReportedDate() {
-        return reportedDate;
-    }
-
-    public void setReportedDate(Date reportedDate) {
-        this.reportedDate = reportedDate;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public ConstructionSite getConstructionSite() {
-        return constructionSite;
-    }
-
-    public void setConstructionSite(ConstructionSite constructionSite) {
-        this.constructionSite = constructionSite;
-    }
 }
