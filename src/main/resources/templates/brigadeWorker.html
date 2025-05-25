@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Список бригад</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="d-flex flex-column min-vh-100">
+
+<!-- Поиск -->
+<nav class="navbar navbar-light bg-light p-3">
+  <div class="container-fluid">
+    <span class="navbar-brand mb-0 h1">Бригады</span>
+    <form class="d-flex" onsubmit="event.preventDefault(); searchBrigades();">
+      <input class="form-control me-2" type="search" id="searchInput" placeholder="Поиск по названию..." aria-label="Поиск">
+      <button class="btn btn-outline-success" type="submit">Поиск</button>
+    </form>
+  </div>
+</nav>
+
+<!-- Список бригад -->
+<div class="container my-4 flex-grow-1">
+  <div class="d-flex justify-content-between mb-3">
+    <h2>Список бригад</h2>
+    <button class="btn btn-primary" onclick="openAddModal()">Добавить бригаду</button>
+  </div>
+  <table class="table table-bordered table-striped">
+    <thead class="table-dark">
+    <tr>
+      <th>Название</th>
+      <th>Специализация</th>
+      <th>Дата начала</th>
+      <th>Дата окончания</th>
+      <th>Действия</th>
+    </tr>
+    </thead>
+    <tbody id="brigadeTableBody">
+    <!-- Данные загружаются с помощью JS -->
+    </tbody>
+  </table>
+</div>
+
+<!-- Меню внизу -->
+<footer class="bg-light text-center p-3 mt-auto">
+  <div class="container">
+    <a href="/" class="btn btn-link">Главная</a>
+    <a href="/brigades" class="btn btn-link">Бригады</a>
+    <a href="/workers" class="btn btn-link">Рабочие</a>
+  </div>
+</footer>
+
+<!-- Модальное окно добавления/редактирования -->
+<div class="modal fade" id="brigadeModal" tabindex="-1" aria-labelledby="brigadeModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form id="brigadeForm" onsubmit="saveBrigade(event)">
+        <div class="modal-header">
+          <h5 class="modal-title" id="brigadeModalLabel">Добавить/Редактировать бригаду</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="brigadeId">
+          <div class="mb-3">
+            <label for="name" class="form-label">Название</label>
+            <input type="text" class="form-control" id="name" required>
+          </div>
+          <div class="mb-3">
+            <label for="specialization" class="form-label">Специализация</label>
+            <input type="text" class="form-control" id="specialization" required>
+          </div>
+          <div class="mb-3">
+            <label for="startDate" class="form-label">Дата начала</label>
+            <input type="date" class="form-control" id="startDate" required>
+          </div>
+          <div class="mb-3">
+            <label for="endDate" class="form-label">Дата окончания</label>
+            <input type="date" class="form-control" id="endDate" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-success">Сохранить</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- JS и Bootstrap -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  let brigades = [];
+  let modal = new bootstrap.Modal(document.getElementById('brigadeModal'));
+
+  function fetchBrigades() {
+      fetch('/api/brigades')
+          .then(res => res.json())
+          .then(data => {
+              brigades = data;
+              renderTable();
+          });
+  }
+
+  function renderTable() {
+      const tbody = document.getElementById('brigadeTableBody');
+      tbody.innerHTML = '';
+      brigades.forEach(b => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+              <td>${b.name}</td>
+              <td>${b.specialization}</td>
+              <td>${new Date(b.startDate).toLocaleDateString()}</td>
+              <td>${new Date(b.endDate).toLocaleDateString()}</td>
+              <td>
+                  <button class="btn btn-sm btn-warning" onclick="editBrigade(${b.id})">Редактировать</button>
+                  <button class="btn btn-sm btn-danger" onclick="deleteBrigade(${b.id})">Удалить</button>
+              </td>
+          `;
+          tbody.appendChild(tr);
+      });
+  }
+
+  function openAddModal() {
+      document.getElementById('brigadeForm').reset();
+      document.getElementById('brigadeId').value = '';
+      modal.show();
+  }
+
+  function editBrigade(id) {
+      const b = brigades.find(b => b.id === id);
+      document.getElementById('brigadeId').value = b.id;
+      document.getElementById('name').value = b.name;
+      document.getElementById('specialization').value = b.specialization;
+      document.getElementById('startDate').value = b.startDate.substring(0, 10);
+      document.getElementById('endDate').value = b.endDate.substring(0, 10);
+      modal.show();
+  }
+
+  function saveBrigade(event) {
+      event.preventDefault();
+      const id = document.getElementById('brigadeId').value;
+      const brigade = {
+          name: document.getElementById('name').value,
+          specialization: document.getElementById('specialization').value,
+          startDate: document.getElementById('startDate').value,
+          endDate: document.getElementById('endDate').value
+      };
+
+      const method = id ? 'PUT' : 'POST';
+      const url = id ? `/api/brigades/${id}` : '/api/brigades';
+
+      fetch(url, {
+          method: method,
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify(brigade)
+      }).then(() => {
+          modal.hide();
+          fetchBrigades();
+      });
+  }
+
+  function deleteBrigade(id) {
+      if (confirm("Удалить бригаду?")) {
+          fetch(`/api/brigades/${id}`, {method: 'DELETE'})
+              .then(() => fetchBrigades());
+      }
+  }
+
+  function searchBrigades() {
+      const query = document.getElementById('searchInput').value.toLowerCase();
+      const filtered = brigades.filter(b => b.name.toLowerCase().includes(query));
+      const tbody = document.getElementById('brigadeTableBody');
+      tbody.innerHTML = '';
+      filtered.forEach(b => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+              <td>${b.name}</td>
+              <td>${b.specialization}</td>
+              <td>${new Date(b.startDate).toLocaleDateString()}</td>
+              <td>${new Date(b.endDate).toLocaleDateString()}</td>
+              <td>
+                  <button class="btn btn-sm btn-warning" onclick="editBrigade(${b.id})">Редактировать</button>
+                  <button class="btn btn-sm btn-danger" onclick="deleteBrigade(${b.id})">Удалить</button>
+              </td>
+          `;
+          tbody.appendChild(tr);
+      });
+  }
+
+  document.addEventListener("DOMContentLoaded", fetchBrigades);
+</script>
+</body>
+</html>

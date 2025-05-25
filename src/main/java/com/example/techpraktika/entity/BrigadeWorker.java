@@ -23,7 +23,7 @@ public class BrigadeWorker {
     private String number;
 
     @ManyToOne
-    @JoinColumn(name = "beidage_id")
+    @JoinColumn(name = "brigade_id")
     private Brigade brigade;
 
 }
