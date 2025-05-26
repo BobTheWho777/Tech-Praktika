@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Список бригад</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+</head>
+<body class="d-flex flex-column min-vh-100">
+
+<!-- Верхняя панель с поиском -->
+<nav class="navbar navbar-light bg-light px-4">
+  <form th:action="@{/brigades}" method="get" class="d-flex w-100">
+    <input name="search" class="form-control me-2" type="search" placeholder="Поиск по имени" aria-label="Search">
+    <button class="btn btn-outline-primary" type="submit">Поиск</button>
+  </form>
+</nav>
+
+<!-- Таблица со списком бригад -->
+<div class="container mt-4 flex-grow-1">
+  <div class="d-flex justify-content-between mb-2">
+    <h2>Бригады</h2>
+    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#createBrigadeModal">Добавить бригаду</button>
+  </div>
+
+  <table class="table table-bordered table-striped">
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>Имя</th>
+      <th>Специализация</th>
+      <th>Дата начала</th>
+      <th>Дата окончания</th>
+      <th>Действия</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="brigade : ${brigades}">
+      <td th:text="${brigade.id}">1</td>
+      <td th:text="${brigade.name}">Бригада А</td>
+      <td th:text="${brigade.specialization}">Монтаж</td>
+      <td th:text="${#temporals.format(brigade.startDate, 'yyyy-MM-dd')}">2024-01-01</td>
+      <td th:text="${#temporals.format(brigade.endDate, 'yyyy-MM-dd')}">2024-12-31</td>
+      <td>
+        <button class="btn btn-primary btn-sm" data-bs-toggle="modal" th:attr="data-bs-target='#editModal_' + ${brigade.id}">Редактировать</button>
+        <a th:href="@{/brigades/delete/{id}(id=${brigade.id})}" class="btn btn-danger btn-sm">Удалить</a>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+  <!-- Пагинация -->
+  <nav th:if="${totalPages > 1}">
+    <ul class="pagination">
+      <li class="page-item" th:classappend="${page == 1} ? 'disabled'">
+        <a class="page-link" th:href="@{/brigades(page=${page - 1})}">Назад</a>
+      </li>
+      <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages)}" th:classappend="${i == page} ? 'active'">
+        <a class="page-link" th:href="@{/brigades(page=${i})}" th:text="${i}">1</a>
+      </li>
+      <li class="page-item" th:classappend="${page == totalPages} ? 'disabled'">
+        <a class="page-link" th:href="@{/brigades(page=${page + 1})}">Вперёд</a>
+      </li>
+    </ul>
+  </nav>
+</div>
+
+<!-- Модальное окно создания -->
+<div class="modal fade" id="createBrigadeModal" tabindex="-1" aria-labelledby="createBrigadeLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <form th:action="@{/brigades/create}" method="post" class="modal-content">
+      <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+      <div class="modal-header">
+        <h5 class="modal-title" id="createBrigadeLabel">Добавить бригаду</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+      </div>
+      <div class="modal-body">
+        <input type="text" name="name" class="form-control mb-2" placeholder="Имя" required>
+        <input type="text" name="specialization" class="form-control mb-2" placeholder="Специализация" required>
+        <input type="date" name="startDate" class="form-control mb-2" required>
+        <input type="date" name="endDate" class="form-control mb-2" required>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-success">Создать</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Модальные окна редактирования (одно на каждую бригаду) -->
+<div th:each="brigade : ${brigades}">
+  <div class="modal fade" th:id="'editModal_' + ${brigade.id}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <form th:action="@{/brigades/edit}" method="post" class="modal-content">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+        <input type="hidden" name="id" th:value="${brigade.id}"/>
+        <div class="modal-header">
+          <h5 class="modal-title">Редактировать бригаду</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+        </div>
+        <div class="modal-body">
+          <input type="text" name="name" class="form-control mb-2" th:value="${brigade.name}" required>
+          <input type="text" name="specialization" class="form-control mb-2" th:value="${brigade.specialization}" required>
+          <input type="date" name="startDate" class="form-control mb-2" th:value="${#temporals.format(brigade.startDate, 'yyyy-MM-dd')}" required>
+          <input type="date" name="endDate" class="form-control mb-2" th:value="${#temporals.format(brigade.endDate, 'yyyy-MM-dd')}" required>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Сохранить</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Нижнее меню -->
+<footer class="bg-light mt-4 py-3">
+  <div class="container d-flex justify-content-between">
+    <div>
+      <a th:href="@{/}" class="btn btn-link">Главная</a>
+      <a th:href="@{/clients}" class="btn btn-link">Клиенты</a>
+      <a th:href="@{/brigades}" class="btn btn-link">Бригады</a>
+      <a th:href="@{/defects}" class="btn btn-link">Дефекты</a>
+      <a th:href="@{/constructionSites}" class="btn btn-link">Строительные объекты</a>
+      <a th:href="@{/materials}" class="btn btn-link">Материалы</a>
+      <a th:href="@{/suppliers}" class="btn btn-link">Поставщики</a>
+      <a th:href="@{/stages}" class="btn btn-link">Стадии</a>
+    </div>
+    <form method="post" th:action="@{/logout}">
+      <input  class="btn btn-outline-danger" type="submit" value="Выход"/>
+    </form>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 @Setter
@@ -24,8 +24,8 @@ public class Brigade {
 
     private String name;
     private String specialization;
-    private Date startDate;
-    private Date endDate;
+    private LocalDate startDate;
+    private LocalDate endDate;
 
     @OneToMany(mappedBy = "brigade", cascade = CascadeType.ALL)
     @JsonIgnore

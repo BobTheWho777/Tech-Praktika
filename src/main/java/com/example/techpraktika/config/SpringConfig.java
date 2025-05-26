@@ -24,13 +24,15 @@ public class SpringConfig {
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers(
                                 "/registration", "/webjars/**", "/img/**",
-                                "/uploads/**", "/sw.js", "/js/**", "/css/**","/login","/error","/brigade","/add_brigade")
-                        .permitAll()
-                        .requestMatchers("/admin/**")
-                        .hasRole("ADMIN"))
+                                "/uploads/**", "/sw.js", "/js/**", "/css/**", "/login", "/error"
+                        ).permitAll()
+                        .requestMatchers("/brigades/**","/constructionSite/**").authenticated()
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .anyRequest().authenticated()
+                )
                 .formLogin((form) -> form
                         .loginPage("/login")
-                        .defaultSuccessUrl("/brigade")
+                        .defaultSuccessUrl("/brigades")
                         .permitAll()
                 )
                 .rememberMe(rememberMe -> rememberMe

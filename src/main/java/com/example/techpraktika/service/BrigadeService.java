@@ -17,4 +17,6 @@ public interface BrigadeService {
 
     void deleteById(Long id);
 
+    List<Brigade> findByNameContaining(String search);
+
 }
