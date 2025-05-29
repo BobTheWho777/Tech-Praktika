@@ -16,7 +16,6 @@ import java.util.List;
 @Table(name = "brigade")
 @NoArgsConstructor
 @AllArgsConstructor
-
 public class Brigade {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,4 +29,8 @@ public class Brigade {
     @OneToMany(mappedBy = "brigade", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<BrigadeWorker> workers;
+
+    @ManyToMany(mappedBy = "brigades", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<ConstructionSite> constructionSites;
 }

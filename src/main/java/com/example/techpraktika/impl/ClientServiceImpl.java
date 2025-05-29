@@ -12,15 +12,33 @@ import java.util.Optional;
 public class ClientServiceImpl implements ClientService {
     private final ClientRepo repo;
 
-    public ClientServiceImpl(ClientRepo repo) {this.repo = repo;}
+    public ClientServiceImpl(ClientRepo repo) {
+        this.repo = repo;
+    }
 
-    public List<Client> findAll() {return repo.findAll();}
+    public List<Client> findAll() {
+        return repo.findAll();
+    }
 
-    public Optional<Client> findById(Long id) {return repo.findById(id);}
+    public Optional<Client> findById(Long id) {
+        return repo.findById(id);
+    }
 
-    public Client save(Client data) {return repo.save(data);}
+    public Client save(Client data) {
+        return repo.save(data);
+    }
 
-    public void update(Client data) { repo.save(data);}
+    public void update(Client data) {
+        repo.save(data);
+    }
 
-    public void deleteById(Long id) {repo.deleteById(id);}
+    public void deleteById(Long id) {
+        repo.deleteById(id);
+    }
+
+    @Override
+    public List<Client> findByNameContainingIgnoreCase(String name) {
+        return repo.findByNameContainingIgnoreCase(name);
+    }
+
 }

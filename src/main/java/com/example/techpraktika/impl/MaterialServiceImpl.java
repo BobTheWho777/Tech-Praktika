@@ -36,4 +36,8 @@ public class MaterialServiceImpl implements MaterialService {
     public void deleteById(Long id) {
         repo.deleteById(id);
     }
+
+    public List<Material> findByNameContainingIgnoreCase(String name) {
+        return repo.findByNameContainingIgnoreCase(name);
+    }
 }

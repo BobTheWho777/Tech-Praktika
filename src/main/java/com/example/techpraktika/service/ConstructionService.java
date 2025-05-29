@@ -15,4 +15,5 @@ public interface ConstructionService {
     void update(ConstructionSite data);
 
     void deleteById(Long id);
+
 }

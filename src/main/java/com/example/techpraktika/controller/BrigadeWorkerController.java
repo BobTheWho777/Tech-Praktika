@@ -1,64 +1,66 @@
 package com.example.techpraktika.controller;
 
 import com.example.techpraktika.entity.BrigadeWorker;
+import com.example.techpraktika.service.BrigadeService;
 import com.example.techpraktika.service.BrigadeWorkerService;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Optional;
 
-@RestController
-@RequestMapping("/api/brigadeWorkers")
+@Controller
+@RequestMapping("/brigadeWorkers")
 public class BrigadeWorkerController {
-    private final BrigadeWorkerService brigadeWorkerService;
 
-    public BrigadeWorkerController(BrigadeWorkerService brigadeWorkerService) {this.brigadeWorkerService = brigadeWorkerService;}
+    private final BrigadeWorkerService workerService;
+    private final BrigadeService brigadeService;
 
-    //Получить всех работников
+    public BrigadeWorkerController(BrigadeWorkerService workerService, BrigadeService brigadeService) {
+        this.workerService = workerService;
+        this.brigadeService = brigadeService;
+    }
+
+    // Показать всех работников из всех бригад
     @GetMapping
-    public List<BrigadeWorker> getAllWorker(){
-        return brigadeWorkerService.findAll();
+    public String listAllWorkers(Model model) {
+        model.addAttribute("workers", workerService.findAll());
+        model.addAttribute("brigades", brigadeService.findAll());
+        return "brigadeWorkers/list";
     }
 
-    // Получить работника по ID
-    @GetMapping("/{id}")
-    public ResponseEntity<BrigadeWorker> getWorkerId(@PathVariable Long id){
-        Optional<BrigadeWorker> worker = brigadeWorkerService.findById(id);
-                return worker.map(ResponseEntity::ok)
-                        .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
-    }
-
-    // Создаём нового работника
-    @PostMapping
-    public ResponseEntity<BrigadeWorker> createWorker(@RequestBody BrigadeWorker worker){
-        BrigadeWorker savedWorker = brigadeWorkerService.save(worker);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedWorker);
-    }
-
-    // Обновляем работника по ИД
-    @PutMapping("/{id}")
-    public ResponseEntity<BrigadeWorker> updateWorker(@PathVariable Long id, @RequestBody BrigadeWorker worker){
-        Optional<BrigadeWorker> existingWorker = brigadeWorkerService.findById(id);
-        if(existingWorker.isPresent()){
-            worker.setId(id);
-            brigadeWorkerService.update(worker);
-            return ResponseEntity.ok(worker);
-        }else{
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    // Показать сотрудников конкретной бригады
+    @GetMapping("/brigade/{brigadeId}")
+    public String listWorkersByBrigade(@PathVariable Long brigadeId, Model model) {
+        var brigade = brigadeService.findById(brigadeId);
+        if (brigade.isPresent()) {
+            model.addAttribute("brigade", brigade.get());
+            model.addAttribute("workers", workerService.findByBrigadeId(brigadeId));
+            model.addAttribute("newWorker", new BrigadeWorker());
+            return "brigadeWorkers/list";
         }
+        return "redirect:/brigades";
     }
 
-    // Удаляем работника
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteWorker(@PathVariable Long id){
-        Optional<BrigadeWorker> worker = brigadeWorkerService.findById(id);
-        if (worker.isPresent()){
-            brigadeWorkerService.deleteById(id);
-            return ResponseEntity.noContent().build();
-        }else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+    // Создать сотрудника
+    @PostMapping("/create")
+    public String createWorker(@ModelAttribute BrigadeWorker worker, @RequestParam Long brigadeId) {
+        brigadeService.findById(brigadeId).ifPresent(worker::setBrigade);
+        workerService.save(worker);
+        return "redirect:/brigadeWorkers/brigade/" + brigadeId;
+    }
+
+    // Обновить сотрудника
+    @PostMapping("/edit")
+    public String editWorker(@ModelAttribute BrigadeWorker worker, @RequestParam Long brigadeId) {
+        brigadeService.findById(brigadeId).ifPresent(worker::setBrigade);
+        workerService.update(worker);
+        return "redirect:/brigadeWorkers/brigade/" + brigadeId;
+    }
+
+    // Удалить сотрудника
+    @GetMapping("/delete/{id}")
+    public String deleteWorker(@PathVariable Long id, @RequestParam Long brigadeId) {
+        workerService.deleteById(id);
+        return "redirect:/brigadeWorkers/brigade/" + brigadeId;
     }
 }

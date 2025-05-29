@@ -49,8 +49,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> findByName(String name) {
-        // Метод оставлен для совместимости, но теперь не используется
-        return Collections.emptyList();
+        return userRepo.findByName(name);
     }
 
     @Override
@@ -83,7 +82,22 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean isEmailAvailable(String email) {
-        // Метод оставлен для совместимости, но теперь всегда возвращает true
-        return true;
+        return userRepo.existsByEmail(email);
+    }
+
+    public void updateUserFromForm(Long id, String username, String email, String phone, String password, String roleStr) {
+        User user = userRepo.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Пользователь не найден!"));
+
+        user.setUsername(username);
+        user.setEmail(email);
+        user.setPhone(phone);
+
+        if (password != null && !password.isBlank()) {
+            user.setPassword(passwordEncoder.encode(password));
+        }
+
+        user.setRoles(Collections.singleton(Role.valueOf(roleStr)));
+        userRepo.save(user);
     }
 }

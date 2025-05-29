@@ -15,4 +15,6 @@ public interface MaterialService {
     void update(Material data);
 
     void deleteById(Long id);
+
+    List<Material> findByNameContainingIgnoreCase(String name);
 }

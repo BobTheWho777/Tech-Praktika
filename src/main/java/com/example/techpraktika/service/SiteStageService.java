@@ -15,4 +15,6 @@ public interface SiteStageService {
     void update(SiteStage data);
 
     void deleteById(Long id);
+
+    List<SiteStage> findByNameContaining(String search);
 }

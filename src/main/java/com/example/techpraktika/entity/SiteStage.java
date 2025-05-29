@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.cglib.core.Local;
 
 import java.time.LocalDate;
 import java.util.Date;
@@ -20,9 +21,9 @@ public class SiteStage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String stageName;
-    private Date startDate;
-    private Date endDate;
+    private String name;
+    private LocalDate startDate;
+    private LocalDate endDate;
     private String status;
 
     @ManyToOne

@@ -15,4 +15,6 @@ public interface ClientService {
     void update(Client data);
 
     void deleteById(Long id);
+
+    List<Client> findByNameContainingIgnoreCase(String name);
 }

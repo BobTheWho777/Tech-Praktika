@@ -1,6 +1,5 @@
 package com.example.techpraktika.controller;
 
-import com.example.techpraktika.entity.User;
 import com.example.techpraktika.impl.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,24 +21,31 @@ public class UserController {
         model.addAttribute("user_list", search == null || search.isEmpty()
                 ? userService.findAllUser()
                 : userService.findByName(search));
-        return "user_list";
+        return "admin/user_list";
     }
 
     @GetMapping("/update")
     String updateUser(@RequestParam(value = "id",required = false) Long id, Model model) {
         model.addAttribute("user", userService.findById(id));
-        return "user_update";
+        return "admin/user_update";
     }
 
     @PostMapping("/update")
-    String saveUpdate(@ModelAttribute("user") User user){
-        userService.updateUser(user);
-        return "redirect:/admin/user/list";
+    String saveUpdate(@RequestParam Long id,
+                      @RequestParam String username,
+                      @RequestParam String email,
+                      @RequestParam String phone,
+                      @RequestParam(required = false) String password,
+                      @RequestParam String role) {
+
+        userService.updateUserFromForm(id, username, email, phone, password, role);
+        return "redirect:/admin/user_list";
     }
+
 
     @GetMapping("/delete")
     String deleteUser(@RequestParam(value = "id",required = false) Long id) {
         userService.deleteUser(id);
-        return "redirect:/admin/user/list";
+        return "redirect:/admin/user_list";
     }
 }

@@ -26,7 +26,7 @@ public class SpringConfig {
                                 "/registration", "/webjars/**", "/img/**",
                                 "/uploads/**", "/sw.js", "/js/**", "/css/**", "/login", "/error"
                         ).permitAll()
-                        .requestMatchers("/brigades/**","/constructionSite/**").authenticated()
+                        .requestMatchers("/brigades/**","/constructionSite/**","brigadeWorkers/**","clients/**","defects/**","materials/**","stages/**","supplier/**","/guide").authenticated()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )

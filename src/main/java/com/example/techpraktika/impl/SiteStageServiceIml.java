@@ -13,10 +13,9 @@ public class SiteStageServiceIml implements SiteStageService {
 
     public SiteStageServiceIml(SiteStageRepo repo) {this.repo = repo;}
 
-    public List<SiteStage> findAll() {
-        return repo.findAll();
-    }
+    public List<SiteStage> findAll() {return repo.findAll();}
 
+    public List<SiteStage> findByNameContaining(String name) {return repo.findByNameContainingIgnoreCase(name);}
 
     public Optional<SiteStage> findById(Long id) {
         return repo.findById(id);

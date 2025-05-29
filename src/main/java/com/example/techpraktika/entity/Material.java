@@ -19,7 +19,7 @@ public class Material {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String Name;
+    private String name;
     private int quantity;
     private int costPerUnit;
 

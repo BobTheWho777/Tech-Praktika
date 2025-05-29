@@ -2,69 +2,95 @@ package com.example.techpraktika.controller;
 
 import com.example.techpraktika.entity.ConstructionSite;
 import com.example.techpraktika.service.ConstructionService;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import javax.swing.text.html.Option;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
-@RestController
-@RequestMapping("/api/constructionSites")
+@Controller
+@RequestMapping("/constructionSites")
 public class ConstructionSiteController {
+
     private final ConstructionService service;
 
     public ConstructionSiteController(ConstructionService service) {
         this.service = service;
     }
 
-    //Получить все объекты
+    // Список с возможностью поиска по названию
     @GetMapping
-    public List<ConstructionSite> getAllConstSite(){
-        return  service.findAll();
+    public String listSites(@RequestParam(required = false) String search, Model model) {
+        List<ConstructionSite> allSites = service.findAll();
+
+        List<ConstructionSite> filteredSites = (search == null || search.isBlank())
+                ? allSites
+                : allSites.stream()
+                .filter(site -> site.getName() != null && site.getName().toLowerCase().contains(search.toLowerCase()))
+                .collect(Collectors.toList());
+
+        model.addAttribute("constructionSites", filteredSites);
+        model.addAttribute("search", search == null ? "" : search);
+        return "constructionSite/list";
     }
 
-    //Получить объект по Ид
+    //Детали объекта
     @GetMapping("/{id}")
-    public ResponseEntity<ConstructionSite> getSiteId(@PathVariable Long id){
-        Optional<ConstructionSite> site = service.findById(id);
-        return site.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    public String viewSiteDetails(@PathVariable Long id, Model model) {
+        var optionalSite = service.findById(id);
+        if (optionalSite.isPresent()) {
+            ConstructionSite site = optionalSite.get();
+
+            site.getDefects().size();
+            site.getBrigades().size();
+            site.getSiteStages().size();
+
+            model.addAttribute("constructionSite", site);
+            return "constructionSite/details"; // новый шаблон
+        } else {
+            return "redirect:/constructionSites";
+        }
     }
 
-    //Создаём новый объект
+
+    // Форма создания нового объекта
+    @GetMapping("/new")
+    public String showCreateForm(Model model) {
+        model.addAttribute("constructionSite", new ConstructionSite());
+        return "constructionSite/form";
+    }
+
+    // Обработка создания
     @PostMapping
-    public ResponseEntity<ConstructionSite> createSite(@RequestBody ConstructionSite site){
-        ConstructionSite savedSite = service.save(site);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedSite);
+    public String createSite(@ModelAttribute ConstructionSite constructionSite) {
+        service.save(constructionSite);
+        return "redirect:/constructionSites";
     }
 
-    //Обновляем объект по ИД
-    @PutMapping("/{id}")
-    public ResponseEntity<ConstructionSite> updateSite (@PathVariable Long id, @RequestBody ConstructionSite site){
-        Optional<ConstructionSite> existingSite = service.findById(id);
-        if (existingSite.isPresent()){
-            site.setId(id);
-            service.update(site);
-            return ResponseEntity.ok(site);
-        }else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-    }
-
-    //Удаляем объект
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteSite(@PathVariable Long id){
-        Optional<ConstructionSite> site = service.findById(id);
-        if (site.isPresent()){
-            service.deleteById(id);
-            return ResponseEntity.noContent().build();
-        }else{
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    // Форма редактирования объекта
+    @GetMapping("/edit/{id}")
+    public String showEditForm(@PathVariable Long id, Model model) {
+        var optionalSite = service.findById(id);
+        if (optionalSite.isPresent()) {
+            model.addAttribute("constructionSite", optionalSite.get());
+            return "constructionSite/form";
+        } else {
+            return "redirect:/constructionSites";
         }
     }
 
 
+    @PostMapping("/update/{id}")
+    public String updateSite(@PathVariable Long id, @ModelAttribute ConstructionSite constructionSite) {
+        constructionSite.setId(id);
+        service.update(constructionSite);
+        return "redirect:/constructionSites";
+    }
+
+    @PostMapping("/delete/{id}")
+    public String deleteSite(@PathVariable Long id) {
+        service.deleteById(id);
+        return "redirect:/constructionSites";
+    }
 }

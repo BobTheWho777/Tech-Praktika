@@ -23,4 +23,7 @@ public class BrigadeWorkerServiceImpl implements BrigadeWorkerService {
     public void update(BrigadeWorker data) { repo.save(data);}
 
     public void deleteById(Long id) { repo.deleteById(id);}
+
+    public List<BrigadeWorker> findByBrigadeId(Long brigadeId) {return repo.findByBrigadeId(brigadeId);}
+
 }

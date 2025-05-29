@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.Locale;
 
 @Setter
 @Getter
@@ -22,7 +23,7 @@ public class Defect {
     private Long id;
 
     private String description;
-    private Date reportedDate;
+    private LocalDate reportedDate;
     private String status;
 
     @ManyToOne

@@ -15,4 +15,6 @@ public interface BrigadeWorkerService {
     void update(BrigadeWorker data);
 
     void deleteById(Long id);
+
+    Object findByBrigadeId(Long brigadeId);
 }

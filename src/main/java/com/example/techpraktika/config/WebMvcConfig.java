@@ -1,8 +1,6 @@
 package com.example.techpraktika.config;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -17,8 +15,11 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addViewController("/defects").setViewName("defects");
         registry.addViewController("/clients").setViewName("clients");
         registry.addViewController("/suppliers").setViewName("suppliers");
-        registry.addViewController("/brigadeWorkers").setViewName("brigadeWorkers");
+        registry.addViewController("/brigadeWorkers").setViewName("brigadeWorkers/list");
         registry.addViewController("/materials").setViewName("materials");
         registry.addViewController("/stages").setViewName("stages");
+        registry.addViewController("/guide").setViewName("guide");
+        registry.addViewController("/admin").setViewName("admin");
+        registry.addViewController("/about").setViewName("about");
     }
 }
